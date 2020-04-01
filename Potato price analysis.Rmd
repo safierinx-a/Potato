@@ -1,0 +1,35 @@
+Looking at potato price time series.
+
+```{r}
+setwd('C:/Users/APOORV/Downloads')
+data <- read.csv("daily_wholesale_price_Potato-upto_apr_2015.csv")
+print(data)
+```
+Let's only consider prices in Delhi and remove the na values and draw up a quick plot. I assume the NA values lie in between their adjacent values.
+```{r}
+delhi <- data[data$Centre_Name=='DELHI',]
+dts <- ts(delhi$Price, frequency=365, start=c(2009,1,1))
+library(imputeTS)
+dts <- na_seadec(dts)
+plot.ts(dts)
+
+```
+Looks Seasonal. Let's decompose.
+
+```{r}
+plot(decompose(dts))
+```
+Looks like there's a clear seasonality to the prices. Makes sense. I wonder if keeping potatoes in cold storage gives a net profit? Let's rummage up some quick stats? Let's look at the maximum possible profit that can be derived.
+```{r}
+r = max(dts)-min(dts)
+r
+s <- decompose(dts)$seasonal + decompose(dts)$random + decompose(dts)$trend - dts
+plot(s)
+dts
+delhi
+```
+
+
+
+
+
